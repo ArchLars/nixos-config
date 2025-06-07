@@ -14,7 +14,6 @@
 
   # Kernel configuration
   boot.kernelPackages = pkgs.linuxPackages;
-  boot.kernelModules = [ "kvm-amd" ];
 
   # zram swap configuration (no traditional swap)
   zramSwap = {
@@ -25,7 +24,7 @@
   };
 
   # Network configuration
-  networking.hostName = "nixos";
+  networking.hostName = "bigboss";
   networking.networkmanager.enable = true;
 
   # Time zone
@@ -69,7 +68,7 @@
     modesetting.enable = true;
     powerManagement.enable = false;
     powerManagement.finegrained = false;
-    open = false;
+    open = true;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
@@ -91,10 +90,10 @@
   };
 
   # User configuration
-  users.users.user = {
+  users.users.lars = {
     isNormalUser = true;
-    description = "User";
-    extraGroups = [ "networkmanager" "wheel" ];
+    description = "Lars";
+    extraGroups = [ "networkmanager" "wheel" "audio" "video" "input" ];
     packages = with pkgs; [
       firefox
       kate
@@ -108,14 +107,9 @@
     wget
     git
     linux-headers
-    nvidia-settings
-    nvidia-system-monitor-qt
+    linux-firmware
   ];
 
-  # Services
-  services.openssh.enable = true;
-  services.printing.enable = true;
-
   # System state version (DO NOT CHANGE after installation)
-  system.stateVersion = "24.05";
+  system.stateVersion = "25.05";
 }
