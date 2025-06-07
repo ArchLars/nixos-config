@@ -17,9 +17,10 @@
   };
 
   ##############################################################################
-  # Kernel
+  # Kernel & Parameters
   ##############################################################################
   boot.kernelPackages = pkgs.linuxPackages;   # switch to linuxPackages_latest if need bleeding-edge NVIDIA
+  boot.kernelParams = [ "nvidia-drm.fbdev=1" ];
 
   ##############################################################################
   # Memory (compressed swap-in-RAM)
@@ -87,7 +88,6 @@
       open            = true;             # set false for pre-Ampere GPUs
       nvidiaSettings  = true;
       package         = config.boot.kernelPackages.nvidiaPackages.stable;
-      boot.kernelParams = [ "nvidia-drm.fbdev=1" ];
     };
   };
 
