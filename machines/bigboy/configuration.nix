@@ -66,11 +66,6 @@
   powerManagement.cpuFreqGovernor = "performance";
 
   # NVIDIA configuration
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
-
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = false;
