@@ -19,7 +19,7 @@
   ##############################################################################
   # Kernel
   ##############################################################################
-  boot.kernelPackages = pkgs.linuxPackages;   # switch to linuxPackages_latest if you need bleeding-edge NVIDIA
+  boot.kernelPackages = pkgs.linuxPackages;   # switch to linuxPackages_latest if need bleeding-edge NVIDIA
 
   ##############################################################################
   # Memory (compressed swap-in-RAM)
@@ -100,7 +100,7 @@
   ##############################################################################
   services.displayManager.sddm = {
     enable = true;
-    wayland.enable = true;      # comment this out if SDDM greeter blanks
+    wayland.enable = true;
   };
   services.desktopManager.plasma6.enable = true;
 
