@@ -40,18 +40,20 @@
     networkmanager.enable = true;
   };
 
-##############################################################################
-# Locale / time
-##############################################################################
-time.timeZone = "Europe/Oslo";
-i18n = {
-  defaultLocale = "en_US.UTF-8";
-  supportedLocales = [ "en_US.UTF-8/UTF-8" "nb_NO.UTF-8/UTF-8" ];
-  extraLocaleSettings = lib.genAttrs [
-    "LC_TIME" "LC_MONETARY" "LC_PAPER" "LC_MEASUREMENT" 
-    "LC_ADDRESS" "LC_TELEPHONE" "LC_NAME" "LC_NUMERIC"
-  ] (_: "nb_NO.UTF-8") // {
-    LC_MESSAGES = "en_US.UTF-8";
+  ##############################################################################
+  # Locale / time
+  ##############################################################################
+  time.timeZone = "Europe/Oslo";
+
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    supportedLocales = [ "en_US.UTF-8/UTF-8" "nb_NO.UTF-8/UTF-8" ];
+    extraLocaleSettings = lib.genAttrs [
+      "LC_TIME" "LC_MONETARY" "LC_PAPER" "LC_MEASUREMENT"
+      "LC_ADDRESS" "LC_TELEPHONE" "LC_NAME" "LC_NUMERIC"
+    ] (_: "nb_NO.UTF-8") // {
+      LC_MESSAGES = "en_US.UTF-8";
+    };
   };
 
   ##############################################################################
