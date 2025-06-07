@@ -87,13 +87,9 @@
       open            = true;             # set false for pre-Ampere GPUs
       nvidiaSettings  = true;
       package         = config.boot.kernelPackages.nvidiaPackages.stable;
+      boot.kernelParams = [ "nvidia-drm.fbdev=1" ];
     };
   };
-
-  ##############################################################################
-  # Power
-  ##############################################################################
-  powerManagement.cpuFreqGovernor = "performance";
 
   ##############################################################################
   # Desktop stack
