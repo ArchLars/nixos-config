@@ -1,5 +1,4 @@
 { config, pkgs, ... }:
-
 {
   imports = [
     ./hardware-configuration.nix
@@ -19,6 +18,7 @@
   zramSwap = {
     enable = true;
     memoryPercent = 50;
+    memoryMax = 4 * 1024 * 1024 * 1024;  # 4GB cap (matches min(ram / 2, 4096))
     algorithm = "zstd";
     priority = 5;
   };
@@ -57,6 +57,13 @@
   };
 
   console.keyMap = "no-latin1";
+
+  # Hardware configuration
+  hardware.enableRedistributableFirmware = true;
+  hardware.cpu.amd.updateMicrocode = true;
+
+  # CPU performance
+  powerManagement.cpuFreqGovernor = "performance";
 
   # NVIDIA configuration
   hardware.graphics = {
@@ -106,8 +113,6 @@
     nano
     wget
     git
-    linux-headers
-    linux-firmware
   ];
 
   # System state version (DO NOT CHANGE after installation)
