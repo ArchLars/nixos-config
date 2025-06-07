@@ -24,7 +24,7 @@
   };
 
   # Network configuration
-  networking.hostName = "bigboss";
+  networking.hostName = "bigboy";
   networking.networkmanager.enable = true;
 
   # Time zone
