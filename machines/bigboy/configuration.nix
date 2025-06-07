@@ -1,48 +1,49 @@
 { config, pkgs, lib, ... }:
-{
-  imports = [
-    ./hardware-configuration.nix
-  ];
 
-  ################################################################################
+{
+  imports = [ ./hardware-configuration.nix ];
+
+  ##############################################################################
   # Nixpkgs & licensing
-  ################################################################################
-  # Allow unfree packages (required for NVIDIA drivers)
+  ##############################################################################
   nixpkgs.config.allowUnfree = true;
 
-  ################################################################################
+  ##############################################################################
   # Boot loader
-  ################################################################################
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  ################################################################################
-  # Kernel
-  ################################################################################
-  boot.kernelPackages = pkgs.linuxPackages;
-
-  ################################################################################
-  # Memory (compressed swap-in-RAM)
-  ################################################################################
-  zramSwap = {
-    enable = true;
-    memoryPercent = 50;                        # up to half RAM …
-    memoryMax = 4 * 1024 * 1024 * 1024;        # … but never above 4 GiB
-    algorithm  = "zstd";
-    priority   = 5;
+  ##############################################################################
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
   };
 
-  ################################################################################
+  ##############################################################################
+  # Kernel
+  ##############################################################################
+  boot.kernelPackages = pkgs.linuxPackages;   # switch to linuxPackages_latest if you need bleeding-edge NVIDIA
+
+  ##############################################################################
+  # Memory (compressed swap-in-RAM)
+  ##############################################################################
+  zramSwap = {
+    enable        = true;
+    memoryPercent = 50;                       # up to half of RAM …
+    memoryMax     = 4 * 1024 * 1024 * 1024;   # … but never above 4 GiB
+    algorithm     = "zstd";
+    priority      = 5;
+  };
+
+  ##############################################################################
   # Networking
-  ################################################################################
-  networking.hostName = "bigboy";
-  networking.networkmanager.enable = true;
+  ##############################################################################
+  networking = {
+    hostName = "bigboy";
+    networkmanager.enable = true;
+  };
 
-  ################################################################################
+  ##############################################################################
   # Locale / time
-  ################################################################################
+  ##############################################################################
   time.timeZone = "Europe/Oslo";
-
   i18n = {
     defaultLocale = "en_US.UTF-8";
     supportedLocales = [
@@ -62,94 +63,91 @@
     };
   };
 
-  ################################################################################
+  ##############################################################################
   # X11 / keyboard
-  ################################################################################
+  ##############################################################################
   services.xserver = {
     enable       = true;
     xkb.layout   = "no";
     xkb.variant  = "";
     videoDrivers = [ "nvidia" ];
   };
-
   console.keyMap = "no-latin1";
 
-  ################################################################################
+  ##############################################################################
   # Hardware bits
-  ################################################################################
+  ##############################################################################
   hardware = {
     enableRedistributableFirmware = true;
-
     cpu.amd.updateMicrocode = true;
 
-    # New graphics module (replaces hardware.opengl.*)
     graphics = {
-      enable      = true;  # 3‑D acceleration, Vulkan, etc.
-      enable32Bit = true;  # install 32‑bit driver set for Wine / Steam
-      # Derived automatically, but we pin explicitly for clarity
-      package32   = config.boot.kernelPackages.nvidiaPackages.stable_32;
+      enable      = true;    # 3-D/Vulkan
+      enable32Bit = true;    # 32-bit driver set for Wine / Steam
+      # package32 left unset — module auto-selects the matching 32-bit driver
     };
 
-    # NVIDIA-specific toggles
     nvidia = {
-      modesetting.enable      = true;
-      powerManagement.enable  = false;
+      modesetting.enable       = true;
+      powerManagement.enable   = false;
       powerManagement.finegrained = false;
-      open            = true;   # Open-kernel module on RTX 40‑series
+      open            = true;             # set false for pre-Ampere GPUs
       nvidiaSettings  = true;
       package         = config.boot.kernelPackages.nvidiaPackages.stable;
     };
   };
 
-  ################################################################################
+  ##############################################################################
   # Power
-  ################################################################################
+  ##############################################################################
   powerManagement.cpuFreqGovernor = "performance";
 
-  ################################################################################
+  ##############################################################################
   # Desktop stack
-  ################################################################################
-  services.displayManager.sddm.enable    = true;
-  services.displayManager.sddm.wayland.enable = true;
+  ##############################################################################
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;      # comment this out if SDDM greeter blanks
+  };
   services.desktopManager.plasma6.enable = true;
 
-  ################################################################################
+  ##############################################################################
   # Audio (PipeWire)
-  ################################################################################
+  ##############################################################################
   security.rtkit.enable = true;
   services.pipewire = {
-    enable       = true;
-    alsa.enable  = true;
-    alsa.support32Bit = true;   # ALSA compatibility for 32‑bit apps
-    pulse.enable = true;
+    enable          = true;
+    alsa.enable     = true;
+    alsa.support32Bit = true;
+    pulse.enable    = true;
   };
 
-  ################################################################################
+  ##############################################################################
   # Users
-  ################################################################################
+  ##############################################################################
   users.users.lars = {
     isNormalUser = true;
     description  = "Lars";
     extraGroups  = [ "networkmanager" "wheel" "audio" "video" "input" ];
-    packages = with pkgs; [ firefox kate konsole ];
+    packages     = with pkgs; [ firefox kate konsole ];
   };
 
-  ################################################################################
-  # System‑wide packages (CLI)
-  ################################################################################
+  ##############################################################################
+  # System-wide CLI packages
+  ##############################################################################
   environment.systemPackages = with pkgs; [ nano wget git ];
 
-  ################################################################################
-  # Garbage collection housekeeping
-  ################################################################################
+  ##############################################################################
+  # Garbage-collection housekeeping
+  ##############################################################################
   nix.gc = {
     automatic = true;
     dates     = "weekly";
     options   = "--delete-older-than 30d";
   };
 
-  ################################################################################
+  ##############################################################################
   # Do not change after install
-  ################################################################################
+  ##############################################################################
   system.stateVersion = "25.05";
 }
