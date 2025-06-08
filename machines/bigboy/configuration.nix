@@ -124,7 +124,7 @@
   ##############################################################################
   # System-wide CLI packages
   ##############################################################################
-  environment.systemPackages = with pkgs; [ nano wget git ];
+  environment.systemPackages = with pkgs; [ nano wget git curl htop btop ];
 
   ##############################################################################
   # Garbage-collection housekeeping
@@ -134,6 +134,29 @@
     dates     = "weekly";
     options   = "--delete-older-than 30d";
   };
+
+  ##############################################################################
+  # Enable automatic security updates
+  ##############################################################################
+  system.autoUpgrade.enable = true;
+  system.autoUpgrade.allowReboot = false;
+
+  ##############################################################################
+  # Set zsh as default shell for user lars
+  ##############################################################################
+  users.users.lars.shell = pkgs.zsh;
+  programs.zsh.enable = true;
+
+  ##############################################################################
+  # Set zsh as default shell for user lars
+  ##############################################################################
+  fonts.packages = with pkgs; [ 
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    liberation_ttf
+    (pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; })
+  ];
 
   ##############################################################################
   # Do not change after install
