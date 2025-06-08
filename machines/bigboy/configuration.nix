@@ -150,13 +150,16 @@
   ##############################################################################
   # Fonts
   ##############################################################################
-  fonts.packages = with pkgs; [ 
-    noto-fonts
-    noto-fonts-cjk
-    noto-fonts-emoji
-    liberation_ttf
-    (pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; })
-  ];
+  fonts = {
+    enableDefaultPackages = true;  # installs a basic set of Unicode fonts
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+      liberation_ttf
+      # your other fonts…
+    ];
+  };
 
   ##############################################################################
   # Do not change after install
