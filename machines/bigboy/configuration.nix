@@ -148,7 +148,7 @@
   programs.zsh.enable = true;
 
   ##############################################################################
-  # Set zsh as default shell for user lars
+  # Fonts
   ##############################################################################
   fonts.packages = with pkgs; [ 
     noto-fonts
