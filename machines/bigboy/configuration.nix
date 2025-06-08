@@ -157,7 +157,7 @@
       noto-fonts-cjk
       noto-fonts-emoji
       liberation_ttf
-      # your other fonts…
+      # other fonts…
     ];
   };
 
